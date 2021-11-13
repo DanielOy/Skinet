@@ -32,14 +32,18 @@ export class ShopService {
     }
 
     params = params.append('sort', shopParams.sort);
-    params = params.append('pageIndex',shopParams.pageNumber.toString());
-    params = params.append('pageSize',shopParams.pageSize.toString());
-    
+    params = params.append('pageIndex', shopParams.pageNumber.toString());
+    params = params.append('pageSize', shopParams.pageSize.toString());
+
     return this.http.get<Pagination>(this.baseURL + 'products', { observe: 'response', params })
       .pipe(
         map(response => {
           return response.body;
         }));
+  }
+
+  getProduct(id: number) {
+    return this.http.get<Product>(this.baseURL + 'products/' + id);
   }
 
   getBrands() {
