@@ -11,10 +11,10 @@ import { ShopService } from './shop.service';
   styleUrls: ['./shop.component.scss']
 })
 export class ShopComponent implements OnInit {
-  @ViewChild("search", { static: true }) searchTerm!: ElementRef;
-  products: Product[] | undefined;
-  brands: Brand[] = [];
-  types: ProductType[] = [];
+  @ViewChild("search", { static: false }) searchTerm!: ElementRef;
+  products?: Product[];
+  brands?: Brand[];
+  types?: ProductType[];
   shopParams = new ShopParams();
   totalCount: number = 0;
   sortOptions = [
