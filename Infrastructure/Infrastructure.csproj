@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
   </ItemGroup>
 
 </Project>
