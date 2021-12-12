@@ -56,7 +56,7 @@ namespace API.Controllers
         {
             var user = await _userManager.FindUserByClaimsEmailWithAddressAsync(User);
 
-            return _mapper.Map<Address,AddressDto>(user.Address);
+            return _mapper.Map<Address, AddressDto>(user.Address);
         }
 
         [Authorize]
@@ -65,7 +65,7 @@ namespace API.Controllers
         {
             var user = await _userManager.FindUserByClaimsEmailWithAddressAsync(User);
 
-            user.Address = _mapper.Map<AddressDto,Address>(address);
+            user.Address = _mapper.Map<AddressDto, Address>(address);
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -102,6 +102,15 @@ namespace API.Controllers
                 Email = registerDto.Email,
                 UserName = registerDto.Email
             };
+
+            if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
+            {
+                return new BadRequestObjectResult(
+                    new ApiValidationErrorResponse
+                    {
+                        Errors = new[] { "Email address is in use" }
+                    });
+            }
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
