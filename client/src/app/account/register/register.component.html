@@ -1,0 +1,22 @@
+<div class="d-flex justify-content-center mt-5">
+    <div class="col-3 py-5" style="background-color: whitesmoke;">
+        <form class="form-signin" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="text-center mb-4">
+                <h1 class="h3 mb-3 fw-normal">Register</h1>
+            </div>
+
+            <app-text-input formControlName="displayName" [label]="'Display Name'"></app-text-input>
+            <app-text-input formControlName="email" [label]="'Email Address'"></app-text-input>
+            <app-text-input formControlName="password" [label]="'Password'" type="password"></app-text-input>
+
+            <ul class="text-danger list-unstyled" *ngIf="errors.length>0">
+                <li *ngFor="let error of errors">
+                    {{error}}
+                </li>
+            </ul>
+
+            <button [disabled]="registerForm.invalid" class="w-100 btn btn-lg btn-primary mt-3"
+                type="submit">Register</button>
+        </form>
+    </div>
+</div>
