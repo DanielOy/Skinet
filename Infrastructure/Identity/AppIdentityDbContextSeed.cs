@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Core.Entities.Identity
+namespace Infrastructure.Identity
 {
     public class AppIdentityDbContextSeed
     {

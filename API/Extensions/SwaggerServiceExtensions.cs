@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace API.Extensions
 {
-    public static class SwaggerServiceExtension
+    public static class SwaggerServiceExtensions
     {
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {
