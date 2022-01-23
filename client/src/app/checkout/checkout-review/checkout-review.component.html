@@ -1,5 +1,7 @@
 <div class="mt-4">
-    <app-basket-summary [isReadOnly]="true"></app-basket-summary>
+    <div *ngIf="(basket$ | async) as basket">
+        <app-basket-summary [isReadOnly]="true" [items]="basket.items"></app-basket-summary>
+    </div>
 </div>
 <div class="float-none d-flex justify-content-between flex-column flex-lg-row mb5">
     <button class="btn btn-outline-primary" cdkStepperPrevious>

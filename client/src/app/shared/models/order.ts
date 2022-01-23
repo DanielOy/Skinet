@@ -16,7 +16,7 @@ export interface Order {
     orderItems: OrderItem[];
     subtotal: number;
     total: number;
-    status: number;
+    status: string;
 }
 
 export interface OrderItem {

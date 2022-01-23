@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
+using System.Text.Json.Serialization;
 
 namespace API
 {
@@ -26,7 +27,12 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddControllers();
+            services.AddControllers()
+                    .AddJsonOptions(options => {
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                        options.JsonSerializerOptions.IgnoreNullValues = true;
+                    });
+
             services.AddDbContext<StoreContext>(x =>
                 x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<AppIdentityDbContext>(x =>

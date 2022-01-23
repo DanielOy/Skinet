@@ -1,0 +1,24 @@
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hower" style="cursor: pointer;">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Order</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let order of orders" routerLink="/orders/{{order.id}}">
+                        <th># {{order.id}}</th>
+                        <th>{{order.orderDate | date:'medium'}}</th>
+                        <th>{{order.total | currency}}</th>
+                        <th>{{order.status}}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

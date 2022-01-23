@@ -64,7 +64,7 @@ namespace API.Controllers
 
             if (order is null) return NotFound(new ApiResponse(404));
 
-            var orderToReturn = _mapper.Map<Order, OrderDto>(order);
+            var orderToReturn = _mapper.Map<Order, OrderToReturnDto>(order);
 
             return Ok(orderToReturn);
         }
