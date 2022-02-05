@@ -14,11 +14,13 @@ namespace Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBasketRepository _basketRepository;
+        private readonly IPaymentService _paymentService;
 
-        public OrderService(IUnitOfWork unitOfWork, IBasketRepository basketRepository)
+        public OrderService(IUnitOfWork unitOfWork, IBasketRepository basketRepository, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _basketRepository = basketRepository;
+            _paymentService = paymentService;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, Address shippingAddress)
@@ -31,15 +33,22 @@ namespace Infrastructure.Services
 
             var subtotal = orderItems.Sum(x => x.Price * x.Quantity);
 
-            var order = new Order(orderItems, buyerEmail, shippingAddress, deliveryMethod, subtotal);
+            var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
+            var existingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpecAsync(spec);
+
+            if (existingOrder != null)
+            {
+                _unitOfWork.Repository<Order>().Delete(existingOrder);
+               await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
+            }
+
+            var order = new Order(orderItems, buyerEmail, shippingAddress, deliveryMethod, subtotal, basket.PaymentIntentId);
 
             _unitOfWork.Repository<Order>().Add(order);
 
             var result = await _unitOfWork.Complete();
 
-            if (result<=0) return null;
-
-            await _basketRepository.DeleteBasketAsync(basketId);
+            if (result <= 0) return null;
 
             return order;
         }
@@ -74,7 +83,7 @@ namespace Infrastructure.Services
         public async Task<IReadOnlyList<Order>> GetOrdersByUserEmailAsync(string buyerEmail)
         {
             var spec = new OrdersWithItemsAndOrderingSpecification(buyerEmail);
-            
+
             return await _unitOfWork.Repository<Order>().GetListAsync(spec);
         }
     }
