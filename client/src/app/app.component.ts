@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from './account/account.service';
 import { BasketService } from './basket/basket.service';
-import { Pagination } from './shared/models/pagination';
+import { IPagination } from './shared/models/pagination';
 import { Product } from './shared/models/product';
 
 @Component({
