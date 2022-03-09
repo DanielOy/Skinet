@@ -1,6 +1,6 @@
 <ng-container *ngIf="items.length>0">
     <div class="table-responsive">
-        <table class="table table-borderless">
+        <table class="table table-hover">
             <thead [class.thead-light]="stylishTableHeader" class="border-0 py-2">
                 <tr>
                     <th class="border-0" scope="col">
@@ -26,9 +26,10 @@
                         <div class="p-2">
                             <img src="{{item.pictureUrl}}" alt="{{item.productName}}" class="img-fluid"
                                 style="max-height: 50px;">
-                            <div class="ml-3 d-inline-block align-middle">
+                            <div class="ms-3 d-inline-block align-middle">
                                 <h5 class="mb-0">
-                                    <a routerLink="/shop/{{item.id || item.productId}}" class="text-dark">{{item.productName}}</a>
+                                    <a routerLink="/shop/{{item.id || item.productId}}" 
+                                    class="text-dark text-decoration-none">{{item.productName}}</a>
                                     <span *ngIf="item.type" class="text-muted font-weight-normal font-italic d-block">Type:
                                         {{item.type}}</span>
                                 </h5>
@@ -40,7 +41,7 @@
                     </td>
                     <td class="align-middle">
                         <div class="d-flex align-items-center" [class.justify-content-center]="isReadOnly">
-                            <i *ngIf="!isReadOnly" (click)="decrementItemQuantity(item)" class="fa fa-minus-circle text-warning mr-2"
+                            <i *ngIf="!isReadOnly" (click)="decrementItemQuantity(item)" class="fa fa-minus-circle text-warning me-2"
                                 style="cursor:pointer; font-size: 2em;"></i>
                             <span class="font-weight-bold" style="font: size 1.5em;">{{item.quantity}}</span>
                             <i *ngIf="!isReadOnly" (click)="incrementItemQuantity(item)" class="fa fa-plus-circle text-warning mx-2"
