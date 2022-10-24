@@ -36,9 +36,9 @@ namespace API
                     });
 
             services.AddDbContext<StoreContext>(x =>
-                x.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
+                x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<AppIdentityDbContext>(x =>
-                x.UseNpgsql(_configuration.GetConnectionString("IdentityConnection")));
+                x.UseSqlite(_configuration.GetConnectionString("IdentityConnection")));
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
                 var configuration = ConfigurationOptions.Parse(_configuration.GetConnectionString("Redis"), true);
@@ -49,7 +49,7 @@ namespace API
             services.AddSwaggerDocumentation();
             services.AddCors(setup => setup.AddPolicy("CorsPolicy", policy =>
             {
-                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
             }));
 
         }
