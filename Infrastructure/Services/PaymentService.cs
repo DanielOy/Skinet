@@ -34,7 +34,6 @@ namespace Infrastructure.Services
 
             if (basket is null) return null;
 
-
             decimal shippingPrince = 0m;
 
             if (basket.DeliveryMethodId.HasValue)

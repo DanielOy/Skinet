@@ -1,17 +1,14 @@
-﻿using Infrastructure.Data;
+﻿using API.Dtos;
+using API.Errors;
+using API.Helpers;
+using AutoMapper;
 using Core.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Core.Interfaces;
 using Core.Specifications;
-using API.Dtos;
-using AutoMapper;
-using API.Errors;
 using Microsoft.AspNetCore.Http;
-using API.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -34,7 +31,6 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Cached(600)]
         public async Task<ActionResult<Pagination<ProductDto>>> GetProducts(
           [FromQuery] ProductSpecParams productParams)
         {
@@ -54,7 +50,6 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Cached(600)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductDto>> GetProduct(int id)
@@ -70,14 +65,12 @@ namespace API.Controllers
         }
 
         [HttpGet("brands")]
-        [Cached(600)]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
             return Ok(await _brandRepo.GetAllAsync());
         }
 
         [HttpGet("types")]
-        [Cached(600)]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
             return Ok(await _typeRepo.GetAllAsync());

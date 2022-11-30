@@ -1,7 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
-using StackExchange.Redis;
-using System;
+using Core.Specifications;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -9,34 +8,50 @@ namespace Infrastructure.Data
 {
     public class BasketRepository : IBasketRepository
     {
-        private readonly IDatabase _database;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BasketRepository(IConnectionMultiplexer redis)
+        public BasketRepository(IUnitOfWork unitOfWork)
         {
-            _database = redis.GetDatabase();
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<bool> DeleteBasketAsync(string basketId)
         {
-            return await _database.KeyDeleteAsync(basketId);
+            var spec = new BaseSpecification<CacheEntry>(x => x.Key == basketId);
+            var entry = await _unitOfWork.Repository<CacheEntry>().GetEntityWithSpecAsync(spec);
+            _unitOfWork.Repository<CacheEntry>().Delete(entry);
+            return (await _unitOfWork.Complete()) != 0;
         }
 
         public async Task<CustomerBasket> GetBasketAsync(string basketId)
         {
-            var data = await _database.StringGetAsync(basketId);
-            return data.IsNullOrEmpty ? null : JsonSerializer.Deserialize<CustomerBasket>(data);
+            var spec = new BaseSpecification<CacheEntry>(x => x.Key == basketId);
+            var entry = await _unitOfWork.Repository<CacheEntry>().GetEntityWithSpecAsync(spec);
+            return string.IsNullOrEmpty(entry?.Value) ? null : JsonSerializer.Deserialize<CustomerBasket>(entry.Value);
         }
 
         public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
         {
-            var created = await _database.StringSetAsync(basket.Id,
-                JsonSerializer.Serialize(basket),
-                TimeSpan.FromDays(3));
+            var spec = new BaseSpecification<CacheEntry>(x => x.Key == basket.Id);
+            var entry = await _unitOfWork.Repository<CacheEntry>().GetEntityWithSpecAsync(spec);
 
-            if (!created)
+            if (entry is null)
             {
-                return null;
+                entry = new CacheEntry
+                {
+                    Key = basket.Id,
+                    Value = JsonSerializer.Serialize(basket)
+                };
+                _unitOfWork.Repository<CacheEntry>().Add(entry);
             }
+            else
+            {
+                entry.Value = JsonSerializer.Serialize(basket);
+                _unitOfWork.Repository<CacheEntry>().Update(entry);
+            }
+
+            await _unitOfWork.Complete();
+
             return await GetBasketAsync(basket.Id);
         }
     }
